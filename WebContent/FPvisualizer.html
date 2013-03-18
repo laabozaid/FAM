@@ -1,0 +1,358 @@
+<html>
+<head>
+
+<script type="text/javascript" src="scripts/loader/jquery.js"></script>
+<script type="text/javascript" src="scripts/loader/jowl.js"></script>
+<script type="text/javascript" src="scripts/loader/jowlLoader.js"></script>
+<script type="text/javascript" src="scripts/loader/binary_stringsearch.js"></script>
+<script type="text/javascript" src="scripts/explorer/explorer.js"></script>
+<script type="text/javascript" src="scripts/searchengine/searchengine.js"></script>
+<script type="text/javascript" src="scripts/editor/editor.js"></script>
+<script type="text/javascript" src="scripts/explorer/arbor/canvas.js"></script>
+<script type="text/javascript" src="scripts/explorer/arbor/intersect.js"></script>
+<script type="text/javascript" src="scripts/explorer/arbor/jquery.doubleclick.js"></script>
+<script type="text/javascript" src="scripts/explorer/arbor/arbor.js"></script>
+<script type="text/javascript" src="scripts/explorer/visualizeFeaturePool.js"></script>
+<script type="text/javascript" src="scripts/searchengine/jalert/drag.js"></script>
+<script type="text/javascript" src="scripts/searchengine/jalert/jquery.jalert.js"></script>
+<script type="text/javascript" src="scripts/preferences/colorpicker/jscolor.js"></script>
+<script type="text/javascript" src="scripts/assembler/assembler.js"></script> 
+<link rel=StyleSheet href="style.css" type="text/css"></link>
+<link rel=StyleSheet href="scripts/searchengine/jalert/jalert.css" type="text/css"></link>
+</head>
+
+<body>
+<script type="text/javascript"> load();</script>
+
+<div class="header"> <br /> Feature Pool Manager </div>							
+								
+<div class="top_menu">
+	<div class="menu_bar">
+		<a href="#" class="menu_bar_selected" id="explore_button">Explore</a>
+		<a href="#" class="menu_bar" id="search_button">Search</a>
+		<a href="#" class="menu_bar" id="edit_button">Edit</a>
+		<a href="#" class="menu_bar" id="preferences_button">Preferences</a>
+		<a href="#" class="menu_bar" id="assemble_button">Assemble</a>
+	</div>
+</div>
+
+<!--------------------------------------------------------------------------------------------------------------------->
+<!----------------------------------------------------- EXPLORER ------------------------------------------------------>
+<!--------------------------------------------------------------------------------------------------------------------->
+
+<div class="explore_area" id="explore_area">
+	<div class="detail_panel" id="detail_panel">
+	</div>
+
+	<div class="option_panel" id="option_panel">
+		General Options:
+			<form id="general_views">
+			</form>
+		Feature relation Options:
+			<form id="relational_views">
+			</form>
+	</div>
+	
+	<div class="perspective_panel" id="perspective_panel">
+		<form id=perspectives>
+		</form>
+	</div>
+	
+	<a class="home" href="#" id="home">
+		Home
+	</a>
+	<a class="zoom_in" href="#" id="zoom_in">
+		+
+	</a>
+	<a class="zoom_out" href="#" id="zoom_out">
+		-
+	</a> 
+	
+	<a class="detail_trigger" href="#" id="detail_trigger">
+		<canvas id="detail_canvas" width="45" height="118"></canvas>
+	</a>
+	<a class="option_trigger" href="#" id="option_trigger">
+		<canvas id="option_canvas" width="45" height="118"></canvas>
+	</a>
+	<a class="perspective_trigger" href="#" id="perspective_trigger">
+		<canvas id="perspective_canvas" width="45" height="118"></canvas>
+	</a>   
+	
+	<canvas id="viewport">
+	</canvas>
+</div>
+
+
+<!--------------------------------------------------------------------------------------------------------------------->
+<!------------------------------------------------------ SEARCH ------------------------------------------------------->
+<!--------------------------------------------------------------------------------------------------------------------->
+
+<div class="search_area" id="search_area">
+	<form id="searchfield" method="get">
+		<table style="width:60%">
+			<tr>
+				<td style="width:20%"> Name: </td>
+				<td colspan = 2> <input type="text" name="search_name" style="width:100%" /> </td>
+			</tr>
+			<tr> 
+				<td style="width:20%" valign="top"> Perspective: </td>
+				<td colspan = 2> <select name="search_perspective" style="width:100%" size=2 multiple> </select> <br /> </td>
+			</tr>
+			<tr> 
+				<td style="width:20%"> Type: </td>
+				<td colspan = 2> 
+					<select name="search_type" style="width:100%" >
+					<option value="--">--</option>
+  					<option value="Concrete_Feature">Concrete_Feature</option>
+  					<option value="Abstract_Feature">Abstract_Feature</option>
+				 	</select> <br />
+				</td>
+			</tr>
+			<tr> 
+				<td style="width:20%"> Option Feature: </td>
+				<td colspan = 2> <input type="checkbox" name="search_option" style="width:100%" /><br /> </td>
+			</tr>
+			<tr> 
+				<td style="width:20%"> Standalone: </td>
+				<td colspan = 2> <input type="checkbox" name="search_standalone" style="width:100%" /><br /> </td>
+			</tr>
+			<tr> 
+				<td style="width:20%"> Has relation: </td>
+				<td colspan = 2> <select name="search_relation" style="width:100%" > </select> <br /> </td>
+			</tr>
+			<tr> 
+				<td style="width:20%"> Owner/Stakeholder: </td>
+				<td> <select name="search_owner" style="width:100%"> </select> </td>
+				<td> <select name="search_stakeholder" style="width:100%"> </select> <br /> </td>
+			</tr>
+			<tr>
+				<td style="width:20%"> Keyword: </td>
+				<td colspan = 2> <select name="search_keyword" style="width:100%"> </select> <br /> </td>
+			</tr>
+			<tr> 
+				<td></td> <td><br /></td>
+			</tr>
+			<tr>
+				<td style="width:20%"> <input type="button" id="search_button2" value="search" style="width:100%" onClick="searchengine.search(this.form)" /> </td>
+				<td style="width:40%"></td>
+			</tr>
+		</table>
+	</form>
+	<table style="width:100%">
+		<tr>
+			<td style="width:10%"> 
+				<a href="#" style="text-decoration:none; color:#000000; font-size:25px" id="prev_page" onClick="searchengine.previousPage()"> &#8249 </a> 
+				<a href="#" style="text-decoration:none; color:#000000; font-size:25px" id="next_page" onClick="searchengine.nextPage()"> &#8250 </a>
+			</td>
+			<td style="width:30%">
+				<div id="page_ctr"></div>
+			</td>
+			<td style="width:60%; text-align:right" id="result_ctr"> </td>
+		</tr>
+	</table>
+	<div class="result_area" id="result_area">
+	
+	</div>
+</div>
+
+
+<!--------------------------------------------------------------------------------------------------------------------->
+<!-------------------------------------------------------- EDIT ------------------------------------------------------->
+<!--------------------------------------------------------------------------------------------------------------------->
+
+<div class="edit_area" id="edit_area">
+	<div class="edit_menu">
+		<div class="edit_menu_bar">
+			<a href="#" class="edit_menu_bar" id="add_feature">Feature</a>
+			<a href="#" class="edit_menu_bar" id="add_perspective">Perspective</a>
+			<a href="#" class="edit_menu_bar" id="add_productline">Productline</a>
+			<a href="#" class="edit_menu_bar" id="add_stakeholder">Stakeholder</a>
+		</div>
+	</div>
+	
+	<div id="errormsg" class="errormsg"> <br> </div>
+	
+	<div id="edit_feature">
+		<form name="edit_feature_form"> <table>
+			<tr> <td colspan="2"> </td> </tr>
+			<tr> <td colspan="2"> <b> Product line Details </b> </td> </tr>
+			<tr> <td class="edit1" valign="top">Current Product Line</td>
+				 <td class="edit2" valign="top"><select id="feature_productline" style="width:500"> </select></td></tr>
+			<tr> <td class="edit1" valign="top">Current Perspective</td>
+				 <td class="edit2" valign="top"><select id="feature_perspective" size="3"  style="width:500" multiple> </select> </td></tr>
+            <tr> <td colspan=2> </td> </tr>
+            <tr> <td colspan=2> <b> Please Fill the Properties of the Feature</b> </td> </tr>
+			<tr> <td class="edit1" valign="top">Name*</td>
+				 <td class="edit2" valign="top"><input id="feature_name" style="width:500" /> </td></tr>
+			<tr> <td class="edit1" valign="top">Description*</td>
+				 <td class="edit2" valign="top"><textarea rows="3" cols="40" id="feature_description" style="width:500"></textarea> </td></tr>
+			<tr> <td class="edit1" valign="top">Keywords</td>
+				 <td class="edit2" valign="top"><table style="width:500">
+									              <tr> <td class="edit3"> <input type="text" id="new_keyword" onFocus="this.value=''"></td>
+									                   <td class="edit4"> </td> 
+									                   <td class="edit3"> <input type="button" value="Add Keyword" onClick='add_new_keyword(document.edit_feature_form.new_keyword.value, document.edit_feature_form.feature_keywords_selected)'></td> </tr> 
+									              <tr> <td class="edit3"> <select id="feature_keywords_list" size="3" style="width:100%" multiple> </select></td>
+									                   <td class="edit4"> <table>
+															   <tr> <td> <input name="add_btn" type="button" value="&gt;" class="listbutton" onClick='moveitems(document.edit_feature_form.feature_keywords_list, document.edit_feature_form.feature_keywords_selected)'> </td> </tr>
+									                   		   <tr> <td> <input name="remove_btn" type="button" value="&lt;" class="listbutton" onClick='moveitems(document.edit_feature_form.feature_keywords_selected, document.edit_feature_form.feature_keywords_list)'></td> </tr>
+									                  		</table> </td>
+									                   <td class="edit3"><select size="3" id="feature_keywords_selected" style="width:100%" multiple> </select> </td> </tr>
+									            </table> </td> </tr>
+			<tr> <td class="edit1" valign="top">Type</td>
+				 <td class="edit2" valign="top"><select id="feature_type" style="width:500" onchange="displaydetails();"> </select> </td></tr>
+			<tr> <td class="edit1" valign="top">Standalone</td>
+				 <td class="edit2" valign="top"><input type="checkbox" id="feature_standalone" /> </td> </tr>
+				 
+			<!-- invisible untill needed ----------------------------------------------------------------------------------------------------------------------------------------->	 
+			<tr id="mandatory_composition_selection" style="display:none">
+            	 <td class="edit1" valign="top"> Mandatory Composed of</td>
+				 <td class="edit2" valign="top"> <table style="width:500">
+				 									<tr> <td class="edit3"> <select id="mand_composition" size="3" style="width:100%" multiple> </select></td>
+				 										 <td class="edit4"> <table> 
+																			   <tr> <td> <input name="add_btn" type="button" value="&gt;"  onClick='moveitems(document.edit_feature_form.mand_composition, document.edit_feature_form.mand_comp_selected, document.edit_feature_form.opt_comp_selected)'> </td> </tr>
+																			   <tr> <td> <input name="remove_btn" type="button"value="&lt;"  onClick='moveitems(document.edit_feature_form.mand_comp_selected, document.edit_feature_form.mand_composition)'> </td> </tr>
+					  														</table> </td>
+				 										 <td class="edit3"> <select  id="mand_comp_selected" size="3" style="width:100%" multiple> </select> </td> </tr> </table> </td> </tr>
+           <tr id="optional_composition_selection" style="display:none">
+            	<td class="edit1" valign="top"> Optionally Composed of </td>
+				<td class="edit2" valign="top"> <table style="width:500">
+												   <tr> <td class="edit3"> <select  id="opt_composition" size="3" style="width:100%" multiple> </select> </td>
+	            										<td class="edit4"> <table>
+	                    													  <tr> <td> <input name="add_btn2" type="button" value="&gt;" onClick='moveitems(document.edit_feature_form.opt_composition, document.edit_feature_form.opt_comp_selected, document.edit_feature_form.mand_comp_selected)'> </td> </tr>
+                    														  <tr> <td> <input name="remove_btn2" type="button" value="&lt;" onClick='moveitems(document.edit_feature_form.opt_comp_selected, document.edit_feature_form.opt_composition)'> </td> </tr>
+                  	 														</table> </td>
+                										<td class="edit3"> <select  id="opt_comp_selected" size="3" style="width:100%" multiple> </select> </td> </tr> </table> </td> </tr>
+           <tr id="option_selection" style="display:none">
+				<td class="edit1" valign="top"> Has Options </td>
+			    <td class="edit2" valign="top"> <table style="width:500">
+													<tr> <td class="edit3"> <select id="options" size="3" style="width:100%" multiple> </select> </td>
+			    										 <td class="edit4"> <table>
+																		 	   <tr> <td> <input name="add_btn3" type="button" value="&gt;" onClick='moveitems(document.edit_feature_form.options, document.edit_feature_form.options_selected)'> </td> </tr>
+     																	 	   <tr> <td> <input name="remove_btn3" type="button" value="&lt;" onClick='moveitems(document.edit_feature_form.options_selected, document.edit_feature_form.options)'> </td> </tr>
+   					 												   	    </table> </td>
+ 														 <td class="edit3"> <select  id="options_selected" size="3" style="width:100%" multiple> </select> </td> </tr> </table> </td> </tr>
+ 			<!------------------------------------------------------------------------------------------------------------------------------------------------------------------>	
+ 			
+			<tr> <td class="edit1" valign="top">Owner</td>
+				 <td class="edit2" valign="top"><select id="feature_owner" size="3" style="width:500" onClick='selectStakeholder()'> </select> </td></tr>
+			<tr> <td class="edit1" valign="top">Stakeholders</td>
+				 <td class="edit2" valign="top"><select id="feature_stakeholder" size="3" style="width:500" multiple> </select></td></tr>
+			<tr> <td> <br /></td> <td> <br /> </td> </tr>
+			<tr> <td> <input type="button" value="Submit" onClick='validateforSubmit("feature")'> </td> <td> </td> </tr>
+		</table></form>
+	</div>
+	<!-- /////////////////////////////////////////////////////////////////-->	
+	<div id="edit_perspective">
+		<form name="edit_perspective_form"> <table>
+			<tr> <td colspan="2"> </td> </tr>
+			<tr> <td colspan="2"> <b>Please Fill the Properties of the new Perspective</b> </td> </tr>
+			<tr> <td class="edit1" valign="top">Name*</td>
+				 <td class="edit2" valign="top"><input id="perspective_name" style="width:500"/> </td></tr>
+			<tr> <td class="edit1" valign="top">Description*</td>
+				 <td class="edit2" valign="top"><textarea rows="3" cols="40" id="perspective_description" style="width:500"></textarea> </td></tr>
+			<tr> <td class="edit1" valign="top">Keywords</td>
+				 <td class="edit2" valign="top"><table style="width:500">
+									              <tr> <td class="edit3"> <input type="text" id="new_keyword" onFocus="this.value=''"></td>
+									                   <td class="edit4"> </td> 
+									                   <td class="edit3"> <input type="button" value="Add Keyword" onClick='add_new_keyword(document.edit_perspective_form.new_keyword.value, document.edit_perspective_form.perspective_keywords_selected)'></td> </tr> 
+									              <tr> <td class="edit3"> <select id="perspective_keywords_list" size="3" style="width:100%" multiple> </select></td>
+									                   <td class="edit4"> <table>
+															   <tr> <td> <input name="add_btn" type="button" value="&gt;" class="listbutton" onClick='moveitems(document.edit_perspective_form.perspective_keywords_list, document.edit_perspective_form.perspective_keywords_selected)'> </td> </tr>
+									                   		   <tr> <td> <input name="remove_btn" type="button" value="&lt;" class="listbutton" onClick='moveitems(document.edit_perspective_form.perspective_keywords_selected, document.edit_perspective_form.perspective_keywords_list)'></td> </tr>
+									                  		</table> </td>
+									                   <td class="edit3"><select size="3" id="perspective_keywords_selected" style="width:100%" multiple> </select> </td> </tr>
+									            </table> </td> </tr>
+			<tr> <td> <input type="button" value="Submit" onClick='validateforSubmit("perspective")'> </td> <td> </td> </tr>
+		</table></form>
+	</div>
+	<!-- /////////////////////////////////////////////////////////////////-->
+	<div id="edit_productline">
+		<form name="edit_productline_form"> <table>
+			<tr> <td colspan="2"> </td> </tr>
+			<tr> <td colspan="2"> <b>Please Fill the Properties of the new Product Line</b> </td> </tr>
+			<tr> <td class="edit1" valign="top">Name*</td>
+				 <td class="edit2" valign="top"><input id="productline_name" style="width:500"/> </td></tr>
+			<tr> <td class="edit1" valign="top">Description*</td>
+				 <td class="edit2" valign="top"><textarea rows="3" cols="40" id="productline_description" style="width:500"></textarea> </td></tr>
+			<tr> <td class="edit1" valign="top">Has Perspective</td>
+				 <td class="edit2" valign="top"><select id="productline_hasperspective" size="3"  style="width:500" multiple> </select> </td></tr>
+			<tr> <td class="edit1" valign="top">Keywords</td>
+				 <td class="edit2" valign="top"><table style="width:500">
+									              <tr> <td class="edit3"> <input type="text" id="new_keyword" onFocus="this.value=''"></td>
+									                   <td class="edit4"> </td> 
+									                   <td class="edit3"> <input type="button" value="Add Keyword" onClick='add_new_keyword(document.edit_productline_form.new_keyword.value, document.edit_productline_form.productline_keywords_selected)'></td> </tr> 
+									              <tr> <td class="edit3"> <select id="productline_keywords_list" size="3" style="width:100%" multiple> </select></td>
+									                   <td class="edit4"> <table>
+															   <tr> <td> <input name="add_btn" type="button" value="&gt;" class="listbutton" onClick='moveitems(document.edit_productline_form.productline_keywords_list, document.edit_productline_form.productline_keywords_selected)'> </td> </tr>
+									                   		   <tr> <td> <input name="remove_btn" type="button" value="&lt;" class="listbutton" onClick='moveitems(document.edit_productline_form.productline_keywords_selected, document.edit_productline_form.productline_keywords_list)'></td> </tr>
+									                  		</table> </td>
+									                   <td class="edit3"><select size="3" id="productline_keywords_selected" style="width:100%" multiple> </select> </td> </tr>
+									            </table> </td> </tr>
+			<tr> <td> <input type="button" value="Submit" onClick='validateforSubmit("productline")'> </td> <td> </td> </tr>
+		</table></form>
+	</div>
+	<!-- /////////////////////////////////////////////////////////////////-->
+	<div id="edit_stakeholder">
+		<form name="edit_stakeholder_form"> <table>
+			<tr> <td colspan="2"> </td> </tr>
+			<tr> <td colspan="2"> <b>Please Fill the Properties of the new Stakeholder</b> </td> </tr>
+			<tr> <td class="edit1" valign="top">Name*</td>
+				 <td class="edit2" valign="top"><input id="stakeholder_name" style="width:500"  /> </td></tr>
+			<tr> <td class="edit1" valign="top">Description*</td>
+				 <td class="edit2" valign="top"><textarea rows="3" cols="40" id="stakeholder_description" style="width:500"></textarea> </td></tr>
+			<tr> <td> <input type="button" value="Submit" onClick='validateforSubmit("stakeholder")'> </td> <td> </td> </tr>
+		</table></form>
+	</div>			
+</div>
+
+
+<!--------------------------------------------------------------------------------------------------------------------->
+<!---------------------------------------------------- PREFERENCES ---------------------------------------------------->
+<!--------------------------------------------------------------------------------------------------------------------->
+
+
+<div class="preferences_area" id="preferences_area">
+	<div id="msg" class="msg"> <br> </div>
+	<form id="preferences">
+		<table>
+			<tr>
+			<td style="vertical-align:top">Explorer:</td>
+			<td> <br /> Colors: <br />
+			      <input id="concrete_color" value="#FF0000" class="color {pickerMode:'HVS'}" onchange="setColor('concrete', this.value)"> Concrete nodes<br />
+			      <input id="abstract_color" value="#0011FF" class="color {pickerMode:'HVS'}" onchange="setColor('abstract', this.value)"> Abstract nodes<br />
+			      <input id="option_color" value="#22FF00" class="color {pickerMode:'HVS'}" onchange="setColor('option', this.value)"> Option nodes<br />
+			      <input id="mandatory_color" value="#000000" class="color {pickerMode:'HVS'}" onchange="setColor('mandatory', this.value)"> Mandatory edges<br />
+			      <input id="optional_color" value="#000000" class="color {pickerMode:'HVS'}" onchange="setColor('optional', this.value)"> Optional edges<br />
+			      <input id="additional_color" value="#000000" class="color {pickerMode:'HVS'}" onchange="setColor('additional', this.value)"> Additional info<br />
+			      <input id="selection_color" value="#8181F7" class="color {pickerMode:'HVS'}" onchange="setColor('selection', this.value)"> Selectrion color<br />
+			 	  </td>
+			</tr>
+			<tr><td><br /></td></tr>
+			<tr>
+			<td style="vertical-align:top">Search results:</td>
+			<td> <input type="checkbox" id="show_path" value="" />Show path from root to result.<br /> </td>
+			</tr>
+		</table>
+	</form>
+</div>
+
+<div class="assemble_area" id="assemble_area">
+
+ 
+		<form id="assemble_form"> 
+		<table>
+			
+			<tr> <td colspan="2"> <b> Product Assembler Details </b> </td> </tr>
+			<tr> <td colspan="2"> </td> </tr>
+			<tr> <td class="edit1" valign="top" style="width:500">Please select the Product Line you wish to configure </td>
+				 <td class="edit2" valign="top"><select id="APL" style="width:300"> </select></td></tr>
+			<tr> <td class="edit1" valign="top" style="width:500">Please select a Perspective to start configuring (System Perspective recommended)</td>
+				 <td class="edit2" valign="top"><select id="assemble_perspective"  style="width:300" multiple> </select> </td></tr>
+            <tr> <td colspan=2> </td> </tr></table>
+            </form>
+
+
+</div>
+
+</body>
+</html>
